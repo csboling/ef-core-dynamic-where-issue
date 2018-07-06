@@ -75,9 +75,10 @@ namespace DynamicWhereAfterProjectionTranslationFailure
         {
             var propertyInfo = typeof(T).GetProperty("Pk");
             var parameter = Expression.Parameter(propertyInfo.DeclaringType, "x");
-            var propertyExpression = Expression.Property(parameter, propertyInfo);
+            var propertyExprFromString = Expression.Property(parameter, "Pk"); // OK
+            var propertyExprFromPropInfo = Expression.Property(parameter, propertyInfo); // translation failure
             var constant = Expression.Constant(pk);
-            Expression body = Expression.Equal(propertyExpression, constant);
+            Expression body = Expression.Equal(propertyExprFromPropInfo, constant);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
         }
 

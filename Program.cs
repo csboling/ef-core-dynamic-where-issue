@@ -73,8 +73,9 @@ namespace DynamicWhereAfterProjectionTranslationFailure
 
         static Expression<Func<T, bool>> BuildExpression<T>(int pk)
         {
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var propertyExpression = Expression.Property(parameter, "Pk");
+            var propertyInfo = typeof(T).GetProperty("Pk");
+            var parameter = Expression.Parameter(propertyInfo.DeclaringType, "x");
+            var propertyExpression = Expression.Property(parameter, propertyInfo);
             var constant = Expression.Constant(pk);
             Expression body = Expression.Equal(propertyExpression, constant);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
